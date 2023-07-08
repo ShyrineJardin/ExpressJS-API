@@ -1,23 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const userRoutes = require('./routes/userRoutes');
 
 const app = express();
-// create an app variable that stores results of the express function that initialize our express application and allow to access different methods that will make backend application easy
 
-mongoose.connect('mongodb+srv://admin:Shay150715@sandbox10247.8qfjdrv.mongodb.net/an22_database_sample?retryWrites=true&w=majority',{
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+const port = 4000;
 
-mongoose.connection.once('open', () => console.log('Now connected to MongoDB Atlas.'));
+mongoose.connect("mongodb+srv://admin:Shay150715@sandbox.3zf3uey.mongodb.net/an22_sample_database?retryWrites=true&w=majority",
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	}
+);
 
-app.use(cors());
+// notification if connection to db is success or failed:
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, "Connection Error."));
+db.once('open', () => console.log("Connected to MongoDB."));
+
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-app.use('/users', userRoutes);
 
-app.listen(process.env.PORT || 4000, () => {
-    console.log(`API is now online on port ${process.env.PORT || 4000}`)
-});
+const userRoutes = require('./routes/userRoutes');
+app.use('/users', userRoutes)mongodb+srv://admin:Shay150715@sandbox.3zf3uey.mongodb.net
+
+app.listen(port, () => console.log(`Server is running at port ${port}`))
